@@ -5,7 +5,7 @@ public class MemberVo { //Vo : Value Object 값을 담는 객체다 또는 DTO�
 	private int midx;                                       //DB에 테이블에 있는 컬럼이름과 동일하게 작성한다.
 	private String memberid;                      //바인딩기술을 사용하기 위해  
 	private String memberpwd;                 //html input name명과 동일하게 맞춘다.
-	private String membername;              //추가 마찬가지로 진행
+	private String membername;              //추가 pull테스트
 	private String membergender;
 	private String memberbirth;
 	private String memberaddr;
