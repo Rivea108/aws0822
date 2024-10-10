@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>자바스크립트 변수 학습하기</title>
+<script>
+let x; //전역변수
+
+function f() {//자바로는 메소드 스크립트에서는 함수 ()있는걸로 구별하면 될 듯 하다
+	let y; //함수안에있는 지역변수
+	
+	x=10; //전역변수 위에 let x;로 x를 펑크션f함수 밖에서 생성해서 x는 전역변수이다
+	y=20; //지역변수 펑크션 f에서 생성되어서 y는 let y;와 같이 세트로 지역변수이다
+	            //x와 y의 차이점 : 함수(function f() {) 밖에서 선언했느냐 안에서 선언했느냐의 차이
+	z=30; //전역변수 z는 선언은 되지 않았지만 스크립트에선 이러한 경우의 전역변수를 '암묵적 전역변수' 라고한다
+	           //스크립트에선 선언되지않은 함수를 암묵적 전역변수라고하고 이러한 경우의 함수를 무조건 전역변수로 취급한다.
+	           
+	if(y==20) { 
+		let b =40; //블럭안에 있는 블럭변수 b
+		b++; //1개 늘어나서 41(증가식)
+		document.write("b값은? = " +b);
+		document.write("<br>");
+	} //블럭이 끝남 블럭변수 사라짐
+	
+	document.write("y값은? = " + y);
+	document.write("<br>");
+}//지역끝남 지역변수 사라짐
+
+f(); //함수 호출
+
+document.write("x값은? = "+x);
+document.write("<br>");
+
+document.write("z값은? = "+z);
+document.write("<br>");
+
+</script>
+</head>
+<body>
+
+</body>
+</html>
