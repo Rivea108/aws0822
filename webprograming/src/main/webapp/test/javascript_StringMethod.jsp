@@ -44,19 +44,6 @@
 		document.write("공백제거? : " + ss);
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	</script>
 </body>
 </html>
