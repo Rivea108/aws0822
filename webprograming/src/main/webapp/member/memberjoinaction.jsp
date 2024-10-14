@@ -10,7 +10,7 @@
     <!-- scope 범위는 4가지가 있다 page(페이지 내에서만), requst(전송하는 범위까지)
     ,session(서버에서 끝날때까지(로그아웃)),application(프로그램이 살아있을 때까지) -->
     
-    <jsp:setProperty name ="mv" property="*" /> <바인딩 기술>
+    <jsp:setProperty name ="mv" property="*" /> <!-- 바인딩기술을 위해 변수이름을 같게함 -->
     
     
     
