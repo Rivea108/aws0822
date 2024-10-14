@@ -50,24 +50,6 @@ function changeImage(){
 	
 }
 
-function chk(obj) {
- 	//alert("chk함수안에 들어왔음");
-     let nm = document.getElementById("nm");
-	//alert("nm 객체생성되었음" + nm);
-	
-	if(nm.value=="") {
-		//alert(e.type);
-	    //e.preventDefault();
-	    alert("아무것도 입력하지 않았음. 포커스로 다시 입력하게 하겠음");
-	    obj= null;
-	     let nm = document.getElementById("nm");
-	    //alert("nm객체 생성되었음" +nm);
-		nm.focus();
-	return false;
-	}
-	
-return;
-}
 
 
 
@@ -103,7 +85,15 @@ return;
 
 <input type="text" id="nm" onblur="chk();"> <!-- 그 위치를 떠날때 감지하는 이벤트 -->
 
-
+<script>
+let nm = document.getElementById("nm");
+nm.onblur = function(){
+	if(nm.value=="") {
+		//alert("testt");
+		nm.focus();
+	}
+};
+</script>
 
 
 
