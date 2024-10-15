@@ -1,4 +1,4 @@
-package mvc.dbcon;
+package mvc.dbcon; //모델1
 
 import java.sql.Connection;
 import java.sql.DriverManager;

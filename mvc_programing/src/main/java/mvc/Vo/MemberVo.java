@@ -1,4 +1,4 @@
-package mvc.Vo;
+package mvc.Vo; //모델1
 
 public class MemberVo {   //Vo : Value Object 값을 담는객체다 또는 DTO라고도 한다 
 	

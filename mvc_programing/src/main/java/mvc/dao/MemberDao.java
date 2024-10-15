@@ -1,4 +1,4 @@
-package mvc.dao;
+package mvc.dao; //모델1
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
