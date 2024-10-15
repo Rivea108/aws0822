@@ -1,6 +1,6 @@
 <%@page import="java.sql.DriverManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-    <jsp:useBean id="mv" class = "mvc.vo.MemberVo" scope="page" />
+    <jsp:useBean id="mv" class = "mvc.Vo.MemberVo" scope="page" />
     <%@ page import = "mvc.dao.MemberDao" %>
     <jsp:setProperty name ="mv" property="*" /> 
     <%
@@ -33,12 +33,12 @@
    String msg ="";
    if(value == 1){      //-> index.jsp는 웹 설정파일에 기본등록되어있어서 생략가능
 	   msg="회원가입되었습니다";
-	   pageUrl=request.getContextPath()+"/index.jsp"; // request.getContextPath() :프로젝트이동시키는 메소드
-	   //response.sendRedirect(pageUrl); // 전송방식 : sendRedirect는 요청받으면 다시 그쪽으로 가라고 지시하는 방법 , 포워드방식도 있다고 하심 
+	   pageUrl=request.getContextPath() + "/"; // request.getContextPath() :프로젝트이동시키는 메소드
+	  response.sendRedirect(pageUrl); // 전송방식 : sendRedirect는 요청받으면 다시 그쪽으로 가라고 지시하는 방법 , 포워드방식도 있다고 하심 
    }else {
 	   msg="회원가입 오류가 발생하였습니다";
 	   pageUrl=request.getContextPath()+"/member/memberjoin.jsp";
-	   //response.sendRedirect(pageUrl);
+	   response.sendRedirect(pageUrl);
    }
    
     %>

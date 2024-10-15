@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+ <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML>
 <HTML>
 <HEAD>
@@ -144,7 +144,7 @@ function hobbyCheck(){
 					<td><input type="number" name="memberphone" maxlength="30"
 						style="width: 300px;"></td>
 				</tr>
-
+				
 				<tr>
 					<th>주소</th>
 					<td><select name="memberaddr" style="width: 100px;">

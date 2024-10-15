@@ -79,16 +79,15 @@ label span {
  <BODY>
   <header style="text-align:center;">mamber-login</header>
 
-  <nav></nav>
    <section>
   <div>
   <article>
-    <form  name"frm" action="memberJom.hrml" method="">
-    <table border = 1 style width="700px" style height="200px" class="jaeseong"> 
+    <form  name = "frm" action="memberJoin.html">
+    <table border = "1" width="700px" height="200px" class="jaeseong"> 
     
-      <tr><td colspan = 7" style="text-align:center;">로그인 페이지</td></tr>
-    <th>아이디</th><td><input type="text" name="memberId" maxlength="30" style="width:200px;" ></td>
-  <th>비밀번호</th><td><input type="password" name="memberPwd" maxlength="30" style="width:200px;" ></td>
+      <tr><td colspan = "2" style="text-align:center;">로그인 페이지</td></tr>
+    <tr><th>아이디</th><td><input type="text" name="memberId" maxlength="30" style="width:200px;" ></td></tr>
+  <tr><th>비밀번호</th><td><input type="password" name="memberPwd" maxlength="30" style="width:200px;" ></td></tr>
       
       
 <tr>
@@ -104,8 +103,9 @@ label span {
       </tr> -->
         
       </table>
-    </section>
-    </div>
+      </form>
     </article>
+    </div>
+    </section>
     </BODY>
 </HTML>
