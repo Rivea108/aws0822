@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import mvc.Vo.MemberVo;
 import mvc.dao.MemberDao;
 
 // index와 컨트롤러 연결에서 에러난 것들 주석 달아놓기
@@ -30,10 +31,10 @@ public class MemberController extends HttpServlet {
 		String uri = request.getRequestURI();
 		System.out.println("uri"+uri);   
               //          /member/memberJoinAction.aws
-	
        		String[] location = uri.split("/");
-		if (location[2].equals("memberJoinAction.aws")){    
-		//4번째방의 값이 memberJoinAction.aws이면
+       		
+       		
+		if (location[2].equals("memberJoinAction.aws")){    //4번째방의 값이 memberJoinAction.aws이면
 			
 			String memberId = request.getParameter("memberid");
 			String memberPwd = request.getParameter("memberpwd");
@@ -74,7 +75,6 @@ public class MemberController extends HttpServlet {
 				pageUrl=request.getContextPath()+"/";  //request.getContextPath() : 프로젝트이름
 		        response.sendRedirect(pageUrl);    	  //전송방식 sendRedirect는 요청받으면 다시 그쪽으로 가라고 지시하는 방법
 		    }else{   
-				
 		    	msg="회원 가입 오류발생하였습니다";
 		    	session.setAttribute("msg", msg);
 		    	pageUrl=request.getContextPath()+"/member/memberJoin.jsp";
@@ -89,15 +89,55 @@ public class MemberController extends HttpServlet {
 				rd.forward(request, response); //포워드 방식 : 내부에서 넘겨서 토스하겠다는 뜻
 				
 		}else if  (location[2].equals("memberLogin.aws")){
-			System.out.println("들어왔나?");
 			
 			String uri2 = "/member/memberLogin.jsp";
 			RequestDispatcher rd = request.getRequestDispatcher(uri2);
 			System.out.println(uri2);
 			rd.forward(request, response); 
-		}
+		}else if (location[2].equals("memberLoginAction.aws")) {
+			
+			System.out.println("memberLoginAction 들어왔나?");
 		
-	}	
+			String memberId = request.getParameter("memberid");
+			String memberPwd = request.getParameter("memberpwd");
+			
+		MemberDao md = new MemberDao();
+		MemberVo mv = md.memberLoginCheck(memberId, memberPwd);
+		System.out.println("mv객체가 생겼나요?" + mv);
+		
+		if(mv == null) {
+			response.sendRedirect(request.getContextPath()+"/member/memberLogin.aws"); //해당 주소로 다시 가세요 해당하는 값이 없을때
+		///member/memberLogin.do에서 do가 아닌 aws를 사용 하는 이유는 확장자를 aws로 지정했기 때문
+			
+
+		}else {
+			//해당되는 로그인 사용자가 있으면 세션에 회원정보 담아서 메인으로 가라
+			
+			String mid = mv.getMemberid(); //아이디 꺼내기
+			int midx = mv.getMidx();           //회원번호 꺼내기
+			String MemberName = mv.getMembername(); //이름꺼내기
+			
+			HttpSession session = request.getSession();
+			session.setAttribute("mid", mid);
+			session.setAttribute("midx", midx);
+			session.setAttribute("MemberName", MemberName);
+			
+			response.sendRedirect("/"); //로그인 되었으면 메인으로 가세요
+		}
+		}else if(location[2].equals("memberLogout.aws")) {
+			System.out.println("memberLogout");
+			
+			//세션 삭제
+			HttpSession session = request.getSession();	
+			session.removeAttribute("mid");
+			session.removeAttribute("midx");
+			session.removeAttribute("memberName");
+			session.invalidate();
+			
+			response.sendRedirect(request.getContextPath()+"/"); 			
+	}
+	
+}	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		doGet(request, response);

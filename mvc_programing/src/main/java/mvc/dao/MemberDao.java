@@ -2,13 +2,16 @@ package mvc.dao; //모델1
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import mvc.Vo.MemberVo;
 import mvc.dbcon.Dbconn;
 
 public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식(객체들을 만들어 놓고 쓰는 방식)
 
 	private Connection conn; // 전역변수로 사용 페이지 어느곳에서나 호출 사용 가능(전연변수 이기에)
-
+	private PreparedStatement pstmt;
 	// 생성자를 통해서 db연결해서 메소드 사용
 	public MemberDao() {
 		Dbconn dbcoon = new Dbconn(); // DB색체 생성
@@ -21,7 +24,7 @@ public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식
 
 		int value = 0; // 메소드 지역변수 결과값을 담는다
 		String sql = "";
-		PreparedStatement pstmt = null;// 쿼리 구문클래스 선언
+		//PreparedStatement pstmt = null;// 쿼리 구문클래스 선언
 		try {
 
 			sql = "insert into member(memberid,memberpwd,membername,"
@@ -54,5 +57,62 @@ public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식
 
 		return value;
 	}
+	
+	//로그인을 통해서 회원정보를 담아오는 메소드이다.
+	public MemberVo memberLoginCheck(String memberId,String memberPwd) {
+		 MemberVo mv = null;
+		String sql = "select * from member where memberid = ? and memberpwd = ?"; //?는 들어갈 변수 대신 나중에 사용할땐 db에 가서 쿼리가 맞는지 확인할것 그런 다음 붙여넣기할것
+ 		ResultSet rs = null; //db에서 결과데이터를 받아오는 전용 클래스
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			pstmt.setString(2, memberPwd);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next() == true) { //커서가 이동해서 데이터 값이 있으면 if(rs.next()) 와 같은 표현
+				String memberid = rs.getString("memberid");	     //결과 값에서 아이디값을 뽑는다
+				int midx = rs.getInt("midx");                                   //결과 값에서 회원번호를 뽑는다.
+				String membername =  rs.getString("membername");
+				
+			  mv = new MemberVo(); //화면에 가지고 갈 데이터를 담을 vo객체생성
+			  mv.setMemberid(memberid); //옮겨담는다
+			  mv.setMidx(midx); //
+			  mv.setMembername(membername);
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return mv;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

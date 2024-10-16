@@ -1,4 +1,7 @@
-<%@page import="java.sql.DriverManager"%>
+<!--  없어도 된다고 하신다  -->
+
+
+<%-- <%@page import="java.sql.DriverManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     <jsp:useBean id="mv" class = "mvc.Vo.MemberVo" scope="page" />
     <%@ page import = "mvc.dao.MemberDao" %>
@@ -47,4 +50,4 @@
    alert('<%=msg%>');
    //자바스크립트로 페이지 이동시킨다 document객체안에 location객체안에 주소속성을 담아서
    document.location.href="<%=pageUrl%>";
-   </script>
+   </script> --%>
