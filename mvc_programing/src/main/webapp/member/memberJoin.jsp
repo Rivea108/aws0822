@@ -4,6 +4,7 @@
 <HEAD>
 <TITLE>회원가입 페이지</TITLE>
 <link href="../css/style.css" type="text/css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <!--  스타일이 없더라도 바로위 줄때문에 스타일링크를 지정해 스타일을 가져온다 -->
 <script>
 const email = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
@@ -99,6 +100,13 @@ function hobbyCheck(){
 	return flag;
 }
 
+$(document).ready(function(){
+	$("#btn").click(function(){
+		alert("증복체크 확인");
+	});
+	
+});
+
 </script>
 
 </HEAD>
@@ -112,12 +120,15 @@ function hobbyCheck(){
 	<div>
 		<article>
 		<form name="frm">
+		<table style="width=800px;"></table>
 		  	<table  class="jaeseong">
 				
 				<tr>
 					<th class="idcolor">아이디</th>
 					<td><input type="text" name="memberid" maxlength="30"
-						style="width: 200px;" value="" placeholder="아이디를 입력하세요"></td>
+						style="width: 200px;" value="" placeholder="아이디를 입력하세요">
+						<button type="button" id="btn">아이디 중복체크</button>
+						</td>
 				</tr>
 				<tr>
 					<th class ="idcolor">비밀번호</th>
