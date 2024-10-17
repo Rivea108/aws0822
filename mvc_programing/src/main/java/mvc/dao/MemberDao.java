@@ -61,7 +61,9 @@ public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식
 	
 	//로그인을 통해서 회원정보를 담아오는 메소드이다.
 	public MemberVo memberLoginCheck(String memberId,String memberPwd) {
-		 MemberVo mv = null;
+		
+		MemberVo mv = null;
+		
 		String sql = "select * from member where memberid = ? and memberpwd = ?"; //?는 들어갈 변수 대신 나중에 사용할땐 db에 가서 쿼리가 맞는지 확인할것 그런 다음 붙여넣기할것
  		ResultSet rs = null; //db에서 결과데이터를 받아오는 전용 클래스
 		try {
@@ -139,4 +141,50 @@ public ArrayList<MemberVo> memberSelectAll() {
 		}		
 		return alist;
 	}		
+
+public int memberIdCheck(String memberId) {
+	
+	MemberVo mv = null;
+	
+	String sql = "select count(*) as cnt from member where memberid=?";
+//?는 들어갈 변수 대신 나중에 사용할땐 db에 가서 쿼리가 맞는지 확인할것 그런 다음 붙여넣기할것
+		ResultSet rs = null; //db에서 결과데이터를 받아오는 전용 클래스
+		int cnt = 0;
+		
+	try {
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, memberId);
+		rs = pstmt.executeQuery();
+		
+		if(rs.next()) { //커서가 이동해서 데이터 값이 있으면 if(rs.next()) 와 같은 표현
+			cnt = rs.getInt("cnt");                                   //결과 값에서 회원번호를 뽑는다.
+		}	
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}finally {
+	}try {
+		pstmt.close();
+		conn.close();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+	
+	return cnt;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

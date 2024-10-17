@@ -1,6 +1,7 @@
 package mvc.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import jakarta.servlet.RequestDispatcher;
@@ -23,6 +24,12 @@ import mvc.dao.MemberDao;
 @WebServlet("/MemberController")       //서블릿 : 자바로 만든 웹페이지 (접속주소: /MemberController)
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	String location; //멤버변수(전역) 초기화 => 이동할 페이지
+	
+	MemberController(String location) {
+		this.location = location;
+	}
          
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
@@ -31,13 +38,13 @@ public class MemberController extends HttpServlet {
 		
 	//	System.out.println("값이 넘어오나요?");
 		//전체주소를 추출
-		String uri = request.getRequestURI();
-		//System.out.println("uri"+uri);   //   /mvc_programming/member/memberJoinAction.aws
-		String[] location = uri.split("/");
+//		String uri = request.getRequestURI();
+//		//System.out.println("uri"+uri);   //   /mvc_programming/member/memberJoinAction.aws
+//		String[] location = uri.split("/");
 		String paramMethod="";   //전송방식이 sendRedirect면 S   forward방식으면  F
 		String url="";
 		
-		if (location[2].equals("memberJoinAction.aws")){    //4번째방의 값이 memberJoinAction.aws이면
+		if (location.equals("memberJoinAction.aws")){    //4번째방의 값이 memberJoinAction.aws이면
 			
 			String memberId = request.getParameter("memberid");			
 			String memberPwd = request.getParameter("memberpwd");			
@@ -82,20 +89,20 @@ public class MemberController extends HttpServlet {
 		    }    	  		    
 		    paramMethod="S";   //밑에서 sendRedirct방식으로 처리한다
 		    
-		}else if (location[2].equals("memberJoin.aws")) {
+		}else if (location.equals("memberJoin.aws")) {
 			//System.out.println("들어왔나?");
 			
 			url="/member/memberJoin.jsp";		 
 			paramMethod = "F";   //하단에서 포워드로 처리합니다.
 			
 			
-		}else if (location[2].equals("memberLogin.aws")) {
+		}else if (location.equals("memberLogin.aws")) {
 		//	System.out.println("들어왔나?");
 			
 			url="/member/memberLogin.jsp";
 			paramMethod = "F";   //하단에서 포워드로 처리합니다.
 			
-		}else if (location[2].equals("memberLoginAction.aws")) {
+		}else if (location.equals("memberLoginAction.aws")) {
 			
 		//	System.out.println("memberLoginAction 들어왔나?");
 			
@@ -124,7 +131,7 @@ public class MemberController extends HttpServlet {
 				url=request.getContextPath()+"/";
 				paramMethod="S";			 			
 			}			
-		}else if(location[2].equals("memberLogout.aws")) {
+		}else if(location.equals("memberLogout.aws")) {
 			//	System.out.println("memberLogout");
 				
 				//세션 삭제
@@ -137,7 +144,7 @@ public class MemberController extends HttpServlet {
 				url=request.getContextPath()+"/";
 				paramMethod="S";					
 				
-		}else if (location[2].equals("memberList.aws")) {
+		}else if (location.equals("memberList.aws")) {
 				System.out.println("memberList.aws");
 			
 				//1.메소드 불러서 처리하는 코드를 만들어야한다
@@ -151,13 +158,28 @@ public class MemberController extends HttpServlet {
 				//2.보여줄 페이지를 forward방식으로 보여준다
 				url= "/member/memberList.jsp";				
 				paramMethod="F";			
-		}				
+		}	else if (location.equals("memberIdCheck.aws")) {
+			System.out.println("memberIdCheck.aws");//디버킹코드
+		
+			String memberId = request.getParameter("memberId");
+			System.out.println("memberId--->"+memberId);//디버킹코드
+			
+		MemberDao md = new MemberDao();
+		
+		int cnt = md.memberIdCheck(memberId);
+		
+		System.out.println("cnt" + cnt); //디버킹코드
+		PrintWriter outsddx = response.getWriter();
+		outsddx.print("{ \"cnt\" : \" "+cnt+" \" }"); 
+		
+		
+		}
 		
 		
 		if (paramMethod.equals("F")) {		
 			RequestDispatcher rd  =request.getRequestDispatcher(url);  
 			rd.forward(request, response); 				
-		}else {
+		}else if (paramMethod.equals("S")) {
 			response.sendRedirect(url);
 		}
 		
