@@ -68,5 +68,12 @@
 </div>
 
 
+<div>
+<a href="<%=request.getContextPath() %>/member/memberList.aws">
+회원목록 가기
+</a>
+</div>
+
+
 </body>
 </html>

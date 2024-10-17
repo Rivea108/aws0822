@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import mvc.Vo.MemberVo;
 import mvc.dbcon.Dbconn;
@@ -82,37 +83,60 @@ public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				pstmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		}try {
+			pstmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
 		return mv;
 	}
 	
+	/* 어레이리스트 형식 
+	 * public 결과값타입 memberSelectAll() {
+	 *  ArrayList<MemberVo> allst = new ArrayList<MemberVo>(); 
+	 * return 담아가서 가지고갈 변수; 
+	 * }
+	 */
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
+public ArrayList<MemberVo> memberSelectAll() {
+		
+		ArrayList<MemberVo> alist = new ArrayList<MemberVo>();
+		String sql = "select * from member where delyn='N' ORDER BY midx desc";
+		ResultSet rs = null; // DB 값을 가져오기 위한 전용 클래스 
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs  = pstmt.executeQuery();
+		
+		while(rs.next()) { //커서가 다음으로 이동해서 첫 글이 있느냐 물어보고 true면 진행 
+		int midx = rs.getInt("midx");
+		String memberId = rs.getString("memberid");
+		String memberName = rs.getString("membername");
+		String writeday = rs.getString("writeday");
+		String memberGender = rs.getString("membergender");
+		
+		MemberVo mv = new MemberVo(); //첫 행부터 옮겨담기
+		mv.setMidx(midx);
+		mv.setMemberid(memberId);
+		mv.setMembername(memberName);
+		mv.setWriteday(writeday);
+		mv.setMembergender(memberGender);
+		alist.add(mv); //ArrayList객체 하나씩 추가한다
+		}
+		
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}					
+		}		
+		return alist;
+	}		
 }
