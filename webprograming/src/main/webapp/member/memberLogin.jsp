@@ -83,7 +83,7 @@ label span {
    <section>
   <div>
   <article>
-    <form  name"frm" action="memberJom.hrml" method="">
+    <form  name"frm" action="memberJom.hrml" method=""></form>
     <table border = 1 style width="700px" style height="200px" class="jaeseong"> 
     
       <tr><td colspan = 7" style="text-align:center;">로그인 페이지</td></tr>
