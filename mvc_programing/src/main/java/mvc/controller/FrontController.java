@@ -13,16 +13,16 @@ public class FrontController extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String uri = request.getRequestURI();  //전체주소 가져오기
+		String uri = request.getRequestURI();  //1. 전체주소 뽑아서 
 		//        /member/memberJoinAction.aws
 		String[]  entity = uri.split("/");    //split으로 잘라주기
 		
-		if (entity[1].equals("member")) {
+		if (entity[1].equals("member")) { //2. 멤버는 멤버컨트롤러를 부르고
 			MemberController  mc = new MemberController(entity[2]);
 			mc.doGet(request, response);			
 			
-		}else if (entity[1].equals("board")) {
-			BoardController  bc = new BoardController(entity[2]);
+		}else if (entity[1].equals("board")) { //3. 보드는 보드컨트롤러를 부르고
+			BoardController  bc = new BoardController(entity[2]); //생성자 entity[2]
 			bc.doGet(request, response);			
 		}
 		//(entity[1].equals("board")보더라고해놓고 보더컨트롤러에서 멤버컨트롤러를 반환해서 

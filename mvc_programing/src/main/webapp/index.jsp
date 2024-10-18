@@ -76,7 +76,7 @@
 
 
 <div>
-<a href="<%=request.getContextPath() %>/board/boardList.aws">
+<a href="<%=request.getContextPath() %>/board/boardList.aws"> <!-- aws 가상경로 -->
 게시판 목록 가기
 </a>
 </div>
