@@ -43,7 +43,8 @@ table th, table td { padding: 5px 10px; }
 /* paging */
 .page { margin: 50px 0 20px; text-align: center; }
 .page ul { display: inline-block; }
-.page li { display: inline-block; width: 20px; height: 20px; cursor: pointer; }
+.page li { display: inline-block; width: 20px; cursor: pointer; } 
+ /*height: 20px; 이게 있어서 글씨가 잘린거다 20px보다 높은데 20px로  제한하려고 하다보니 --> 에러가 날만한듯(그래서 지움)*/
 .page .on { background: black; color: white; }
 
 

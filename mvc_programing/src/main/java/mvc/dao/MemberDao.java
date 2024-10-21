@@ -83,17 +83,19 @@ public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식
 			  mv.setMemberid(memberid); //옮겨담는다
 			  mv.setMidx(midx); //
 			  mv.setMembername(membername);
+			  
 			}	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-		}try {
-			pstmt.close();
-			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			try {
+				rs.close();
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		
 		return mv;
 	}
 	

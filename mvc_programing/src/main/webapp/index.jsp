@@ -24,7 +24,7 @@
  if (session.getAttribute("midx") != null) { //로그인이 되었으면 
 	 midx = (int) session.getAttribute("midx");//midx를 가져와야 하는데 mid를 입력했음
  	memberId =  (String)session.getAttribute("mid");
- 	memberName = (String)session.getAttribute("MemberName");	//MemberName을 가져와야하는데 memberName을가져옴
+ 	memberName = (String)session.getAttribute("memberName");	//MemberName을 가져와야하는데 memberName을가져옴
 	
  	alt = memberName+"님 로그인 되셨습니다.";
  	logMsg = "<a href='"+request.getContextPath()+"/member/memberLogout.aws'>로그아웃</a>";

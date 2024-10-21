@@ -23,7 +23,14 @@ public class BoardVo {
 	private String ip;
 	private int midx;
 	private String modifyday;
+	private String password;
 	
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	//우클릭후  source 아래서 일곱줄에 있는 제레레이터 겟터와 세터를 클릭해 오른쪽에있는 셀렉트올로 전부다 겟터와 세터를 생성한다.
 	public int getBidx() {
 		return bidx;

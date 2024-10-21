@@ -109,6 +109,7 @@ public class MemberController extends HttpServlet {
 			String memberId = request.getParameter("memberid");
 			String memberPwd = request.getParameter("memberpwd");
 			
+			
 			MemberDao md = new MemberDao();
 			MemberVo mv = md.memberLoginCheck(memberId, memberPwd);
 		//	System.out.println("mv객체가 생겼나요?" + mv);
@@ -120,7 +121,9 @@ public class MemberController extends HttpServlet {
 				//해당되는 로그인 사용자가 있으면 세션에 회원정보 담아서 메인으로 가라
 				
 				String mid = mv.getMemberid();   //아이디 꺼내기
+				
 				int midx = mv.getMidx();      //회원번호 꺼내기
+				
 				String memberName = mv.getMembername();    //이름꺼내기
 				
 				HttpSession session = request.getSession();	

@@ -9,9 +9,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import mvc.Vo.BoardVo;
+import mvc.Vo.Criteria;
+import mvc.Vo.PageMaker;
 import mvc.dao.BoardDao;
-
 
 @WebServlet("/BoardController")
 public class BoardController extends HttpServlet {
@@ -34,47 +36,95 @@ public class BoardController extends HttpServlet {
 		String paramMethod="";   //전송방식이 sendRedirect면 S   forward방식으면  F
 		String url="";
 		
-		//1. 가상경로(boardList) 생성 보드컨트롤러에 연결(맞는지 아닌지도 모르겠음)
 		if (location.equals("boardList.aws") ) {//가상경로
 			
+			String page = request.getParameter("page");
+			if(page == null) page = "1";
+			//if 문을 만들때 실행문이 한개일때 {}생략가능
+			int pageInt = Integer.parseInt(page); //문자를 숫자로 변경
+
+			System.out.println(pageInt);
+			Criteria cri = new Criteria();
+			cri.setPage(pageInt);
+			
+
+			PageMaker pm = new PageMaker();
+			pm.setCrl(cri);                          //<------ PageMaker에 Criteria 담아서 가지고다닌다
+			
 			BoardDao bd = new BoardDao(); //객체생성
-			ArrayList<BoardVo> alist = bd.boardSelectAll(); 
-			System.out.println("alist ==>" + alist); //객체주소가 나오면 객체가 생성된 것을 짐작할수 있다.
+			//페이징 처리하기 위한 전체 데이터 갯수 가져오기
+			int boardCnt = bd.boardTotalCount();
+			//System.out.println("게시물 수는? : " +  boardCnt );
+			pm.setTotalCount(boardCnt);                          //<------ PageMaker에 전체 게시물수를 담아서 페이지계산 
 			
-			request.setAttribute("alist", alist);//통신객체?
+			ArrayList<BoardVo> alist = bd.boardSelectAll(cri); 
+		
 			
+			request.setAttribute("alist", alist); //화면까지 가지고 가기위해 request객체에 담는다
+			request.setAttribute("pm", pm);    //forward 방식으로 넘기기 때문에 공유가 가능하다.
+		
 			paramMethod="F";
 			url=request.getContextPath() + "/board/boardList.jsp"; //실제 내부경로
+		
 			
+		}else if (location.equals("boardWrite.aws")) { 
+		System.out.println("boardWrite");
+		
+		paramMethod="F";  //포워드 방식은 내부에서 공유하는 것이기 때문ㅇ ㅔ내부에서 활동한다
+		url = "/board/boardWrite.jsp"; //실제 내부경로
+		}	else if(location.equals("boardWriteAction.aws")) {
+			System.out.println("boardWriteAction.aws");
+		
+			//1.파라미터 값을 넘겨받는다.
+		String subject = request.getParameter("subject");
+		String contents = request.getParameter("contents");
+		System.out.println(contents);
+		String writer = request.getParameter("writer");
+		String password = request.getParameter("password");
+		
+		HttpSession session = request.getSession(); //세션 객체 불러와서 
+		int midx = Integer.parseInt(session.getAttribute("midx").toString()); //로그인 할 때 담았던  세션변수 midx값을 꺼낸다
+		
+		BoardVo bv = new BoardVo();
+		bv.setSubject(subject);
+		bv.setContents(contents);
+		bv.setWriter(writer);
+		bv.setPassword(password);
+		bv.setMidx(midx);
+		
+		//2. DB처리한다..
+		BoardDao bd = new BoardDao();
+		int value = bd.boardInsert(bv);
+		
+		if(value == 2 ) { //입력성공
+			paramMethod="S";
+			url = request.getContextPath() + "/board/boardList.aws";
+		}else { //입력실패
+			paramMethod="S";
+			url = request.getContextPath() + "/board/boardWriter.aws";
 		}
+		
+		//3. 처리후 이동한다 sendRedirect
+		paramMethod="S";
+		url = request.getContextPath() + "/board/boardList.aws";
+		}
+		
 		if (paramMethod.equals("F")) {		
 			RequestDispatcher rd  =request.getRequestDispatcher(url);  
 			rd.forward(request, response); 				
 		}else if (paramMethod.equals("S")) {
-			response.sendRedirect(url);
-		}//가상경로 보드컨트롤러에 연결하는거 종료(맞는지 아닌지도 모르겠음)
+			response.sendRedirect(request.getContextPath() + url);
+		}
 		
-		
-		
-		  //2. 가상경로(boardWrite) 생성 보드컨트롤러에 연결(이게맞냐?)
+		  
 		if (location.equals("boardWrite.aws")) {
-		  
-		  BoardDao wr = new BoardDao(); 
-		  ArrayList<BoardVo> alist = wr.boardSelectAll();
-		  System.out.println("alist ==>" + alist);
-		  
-		  request.setAttribute("alist", alist);
-		  
+		 
 		  paramMethod="F";
-		  url=request.getContextPath() + "/board/boardWrite.jsp"; //실제내부경로 
-		  }
-		if (paramMethod.equals("F")) { 
-			RequestDispatcher rd=request.getRequestDispatcher(url);
-			rd.forward(request, response); 
-			}else if (paramMethod.equals("S")) { response.sendRedirect(url); }
-	}
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-}
+		  url=request.getContextPath() + "/board/boardWrite.jsp";//실제내부경로 
+		}
+		}
+			protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+				doGet(request, response);
+			}
+		}
+		  
