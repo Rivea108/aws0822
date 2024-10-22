@@ -156,7 +156,89 @@ public class BoardDao {
 		return value;
 	}
 	
-	
+	public BoardVo boardSelectOne(int bidx) {
+		//1. 형식부터 만든다
+		BoardVo bv = null;
+		//2. 사용할 쿼리를 준비한다.
+		String sql = "select * from board where delyn='N' AND bidx=?";
 		
+		ResultSet rs = null;
+		try {
+			//3. conn 연결객체에서 구문쿼리실행 구문클래스를 불러온다.
+			pstmt = conn.prepareStatement(sql); //멤버번수(전역변수)로 선언한 PrepareStatement 객체로 담음
+			pstmt.setInt(1, bidx); //첫번째 물음표에 매개변수 bidx값을 담아서 구문을 완성한다                                                            	     161줄로 대입됨 
+			rs = pstmt.executeQuery(); //쿼리를 실행해서 결과값을 컬럼전용 클래스인 ResultSet 객체에 담는다(복사기능).               	 163줄로 대입됨
+			
+			if(rs.next() == true) { //rs.next()는 커서를 다음줄로 이동시킨다. 맨처름 커서는 상단에 위치되어있다.
+				//값이 존재한다면 BoardVo 객체에 담는다.
+				String subject = rs.getString("subject");
+				String contents = rs.getString("contents");
+				System.out.println("asdasda");
+				String writer = rs.getString("writer");
+				String writeday = rs.getString("writeday");
+				int viewcnt = rs.getInt("viewcnt");
+				int recom = rs.getInt("recom");
+				String filename = rs.getString("filename");
+				int rtnBidx = rs.getInt("bidx");
+				int originbidx = rs.getInt("originbidx");
+				int depth = rs.getInt("depth");
+				int level_ = rs.getInt("level_");
+				String password = rs.getString("password");
+				
+				bv = new BoardVo(); //객체생성해서 지역변수 bv로 담아서 리턴해서 가져간다
+				bv.setSubject(subject);
+				bv.setContents(contents);
+				bv.setWriter(writer);
+				bv.setWriteday(writeday);
+				bv.setViewcnt(viewcnt);
+				bv.setRecom(recom);
+				bv.setFilename(filename);
+				bv.setBidx(rtnBidx);
+				bv.setOriginbidx(originbidx);
+				bv.setDepth(depth);
+				bv.setLevel_(level_);
+				bv.setPassword(password);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {     // 각 객체도 소멸시키고 DB연결 끊는다
+				rs.close();
+				pstmt.close();
+			    conn.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}			
+		}
+		System.out.println("subject" + bv.getSubject());
+		return bv;
+	}
+	
+	//게시물 수정하기
+	public int boardUpdate(BoardVo bv) {
+		
+		int value = 0;
+		String sql = "update board set subject='?',contents='?',writer='?',modifyday=now() where bidx=? and password=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, bv.getSubject());
+			pstmt.setString(2, bv.getContents());
+			pstmt.setString(3, bv.getWriter());
+			pstmt.setInt(4, bv.getBidx());
+			pstmt.setString(5, bv.getPassword());
+			value =  pstmt.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {     // 각 객체도 소멸시키고 DB연결 끊는다
+				pstmt.close();
+			    conn.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}			
+		}
+		return value;
+	}
 
 	}

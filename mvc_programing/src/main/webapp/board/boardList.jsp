@@ -47,7 +47,8 @@
  		<% for(BoardVo bv : alist) { %> 
 		<tr>
 			<td><%=bv.getBidx() %></td>
-			<td class="title"><a href="./detail.html"><%=bv.getSubject() %></a></td>
+			<td class="title"><a href="<%=request.getContextPath() %> /board/boardContents.aws?bidx=<%=bv.getBidx() %>"><%=bv.getSubject() %></a></td>
+			<!-- ?뒤에 넘기는 방식이 get방식 -->
 			<td><%=bv.getWriter() %></td>
 			<td><%=bv.getViewcnt() %></td>
 			<td><%=bv.getWriteday() %></td>

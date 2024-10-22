@@ -105,9 +105,83 @@ public class BoardController extends HttpServlet {
 		}
 		
 		//3. 처리후 이동한다 sendRedirect
-		paramMethod="S";
-		url = request.getContextPath() + "/board/boardList.aws";
-		}
+		/*
+		 * paramMethod="S"; url = request.getContextPath() + "/board/boardList.aws";
+		 */
+		
+		}else if (location.equals("boardContents.aws")) {
+			System.out.println("boardContents.aws");
+			
+			//이것이 컨트롤러의 역할이다
+			
+			//1.  넘어온 값 받기
+			String bidx = request.getParameter("bidx");
+			System.out.println("bidx-->"+bidx);
+			int bidxInt = Integer.parseInt(bidx); //bidx라는 문자를 숫자로 변경
+			
+			//2. 처리하기
+			BoardDao bd = new BoardDao(); //객체생성하고
+			BoardVo bv = bd.boardSelectOne(bidxInt);
+			
+			request.setAttribute("bv", bv); //포워드방식이라 같은 영역안에 있어서 공유해서 jsp페이지에서 꺼내쓸수 있다.
+			
+			//3. 이동해서 화면 보여주기
+			paramMethod="F"; // 화면을 보여주기 위해서 같은 영역 내부 안에 jsp페이지를 보여준다.
+			url = "/board/boardContents.jsp";
+		}else if (location.equals("boardModify.aws")) {
+			System.out.println("boardModify.aws");
+			
+			String bidx = request.getParameter("bidx");
+		
+			//2. 처리하기(120줄부터  126줄을 복사붙여넣기 한다.
+			int bidxInt = Integer.parseInt(bidx);  //120줄
+			BoardDao bd = new BoardDao();      //123줄
+			BoardVo bv = bd.boardSelectOne(bidxInt); //124줄
+			
+			request.setAttribute("bv", bv); //126줄
+			
+			//=============================모디파이 생성
+			
+			paramMethod="F"; 			
+			url= "/board/boardModify.jsp";
+			
+			}else if(location.equals("/board/boardModifyAction.aws")) {
+			System.out.println("/board/boardModifyAction.aws");
+			
+			String subject = request.getParameter("subject");
+			String contents = request.getParameter("contents");
+			String writer = request.getParameter("writer");
+			String password = request.getParameter("password");
+			String bidx = request.getParameter("bidx");
+			
+			int bidxInt = Integer.parseInt(bidx);  //120줄
+			
+			BoardDao bd = new BoardDao();      
+			BoardVo bv = bd.boardSelectOne(bidxInt); 
+			paramMethod="S"; 			
+			
+			//비밀번호 체크
+			if(password.equals(bv.getPassword())) {
+				//같으면 
+				BoardDao bd2 = new  BoardDao();
+				BoardVo bv2 = new BoardVo();
+				bv.setSubject(subject);
+				bv.setContents(contents);
+				bv.setWriter(writer);
+				bv.setPassword(password);
+				bv.setBidx(bidxInt);
+				int value = bd2.boardUpdate(bv);
+				
+				if(value == 1) {
+					url= request.getContextPath()+"/board/boardContents.aws?bidx="+bidx;
+				}else {
+					url= request.getContextPath()+"/board/boardModify.aws?bidx="+bidx;
+				}
+			}else {
+				//비밀번호가 다르면
+				url= request.getContextPath()+"/board/boardModify.aws?bidx=";
+			}			
+		}		
 		
 		if (paramMethod.equals("F")) {		
 			RequestDispatcher rd  =request.getRequestDispatcher(url);  
@@ -116,12 +190,9 @@ public class BoardController extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + url);
 		}
 		
-		  
-		if (location.equals("boardWrite.aws")) {
-		 
-		  paramMethod="F";
-		  url=request.getContextPath() + "/board/boardWrite.jsp";//실제내부경로 
-		}
+		  //=====================================모디파이 생성 종료
+		                     
+
 		}
 			protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 				doGet(request, response);
