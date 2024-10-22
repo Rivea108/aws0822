@@ -25,7 +25,7 @@
 
 function check() {
 	  
-	  // 유효성 검사하기 해결 완
+	  // 유효성 검사하기 해결
 	  let fm = document.frm;
 	  
 	  if (fm.subject.value == "") {
