@@ -1,13 +1,11 @@
 package mvc.controller;
-<<<<<<< HEAD
+
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import jakarta.servlet.RequestDispatcher;
-=======
-//zz
->>>>>>> refs/remotes/origin/main
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
