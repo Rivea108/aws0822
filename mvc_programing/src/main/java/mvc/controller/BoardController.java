@@ -2,10 +2,13 @@ package mvc.controller;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import jakarta.servlet.RequestDispatcher;
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -77,6 +80,20 @@ public class BoardController extends HttpServlet {
 		}	else if(location.equals("boardWriteAction.aws")) {
 			System.out.println("boardWriteAction.aws");
 		
+			//저장될 위치
+			/*
+			 * String savePath=
+			 * "C:\\Users\\admin\\git\\aws0822\\mvc_programing\\src\\main\\webapp\\images";
+			 * int sizeLimit = 15 * 1024 * 1024; //15메가 String dateType = "UTF-8";
+			 * DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
+			 * MultipartRequest multi = new MultipartRequest(request,savePath, sizeLimit,
+			 * dateType, policy);
+			 */
+			
+			
+			
+			
+			
 			//1.파라미터 값을 넘겨받는다.
 		String subject = request.getParameter("subject");
 		String contents = request.getParameter("contents");
@@ -123,8 +140,9 @@ public class BoardController extends HttpServlet {
 			
 			//2. 처리하기
 			BoardDao bd = new BoardDao(); //객체생성하고
-			BoardVo bv = bd.boardSelectOne(bidxInt);
 			
+			bd.boardViewCntUpdate(bidxInt);
+			BoardVo bv = bd.boardSelectOne(bidxInt);  //생성한 메소드 호출 (해당되는 bidxdl게시물 데이터 가져옴)
 			request.setAttribute("bv", bv); //포워드방식이라 같은 영역안에 있어서 공유해서 jsp페이지에서 꺼내쓸수 있다.
 			
 			//3. 이동해서 화면 보여주기
@@ -183,7 +201,22 @@ public class BoardController extends HttpServlet {
 				//비밀번호가 다르면
 				url= request.getContextPath()+"/board/boardModify.aws?bidx=";
 			}			
-		}		
+		}else if(location.equals("boardRecom.aws")) {
+			
+			String bidx = request.getParameter("bidx");
+			int bidxInt = Integer.parseInt(bidx); 
+			
+			BoardDao bd = new BoardDao();
+			int recom = bd.boardRecomUpdate(bidxInt);
+			
+			PrintWriter out = response.getWriter();
+			out.println("{\"recom\":\""+recom+"\"}");
+			
+			
+			
+			//paramMethod="S";
+			//url="/board/boardComtents.aws?bidx=" + bidx;
+		}
 		
 		if (paramMethod.equals("F")) {		
 			RequestDispatcher rd  =request.getRequestDispatcher(url);  

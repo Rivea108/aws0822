@@ -41,16 +41,18 @@
 			<th>제목</th>
 			<th>작성자</th>
 			<th>조회</th>
+			<th>추천</th>
 			<th>날짜</th>
 		</tr>
 		<!--   -->
- 		<% for(BoardVo bv : alist) { %> 
+ 		<% for(BoardVo bv : alist) { %> <!-- 이게 리스트에 있는 조회수나 추천수 넘버등등의 숫자를 하나씩 늘리는것  -->
 		<tr>
 			<td><%=bv.getBidx() %></td>
 			<td class="title"><a href="<%=request.getContextPath() %> /board/boardContents.aws?bidx=<%=bv.getBidx() %>"><%=bv.getSubject() %></a></td>
 			<!-- ?뒤에 넘기는 방식이 get방식 -->
 			<td><%=bv.getWriter() %></td>
 			<td><%=bv.getViewcnt() %></td>
+			<td><%=bv.getRecom() %></td>
 			<td><%=bv.getWriteday() %></td>
 		</tr>
 		<% }  %> 

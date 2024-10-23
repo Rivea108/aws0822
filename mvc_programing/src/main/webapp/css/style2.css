@@ -50,6 +50,9 @@ table th, table td { padding: 5px 10px; }
 
 /* detail */
 .detailContents { border-bottom: 1px solid black; padding: 10px; }
+.detailContents .contentTitle {float : Left;}
+.detailContents .detailTitle .btn {float : right; width : 60px; }
+.detailContents .write{clear: both;}
 .detailContents .content { padding: 20px 0; }
 .detailContents .fileDown img { margin-right: 10px; }
 

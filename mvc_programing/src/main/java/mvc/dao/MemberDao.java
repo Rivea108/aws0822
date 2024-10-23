@@ -11,7 +11,7 @@ import mvc.dbcon.Dbconn;
 
 public class MemberDao { //mvc 방식으로 가기전에 첫번째 model1 방식(객체들을 만들어 놓고 쓰는 방식)
 
-	private Connection conn; // 전역변수로 사용 페이지 어느곳에서나 호출 사용 가능(전연변수 이기에)
+	private Connection conn; // 전역변수로 사용 페이지 어느곳에서나 호출 사용 가능(전역변수 이기에)
 	
 	private PreparedStatement pstmt;
 	// 생성자를 통해서 db연결해서 메소드 사용

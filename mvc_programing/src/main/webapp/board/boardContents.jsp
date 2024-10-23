@@ -10,6 +10,8 @@
 <meta charset="UTF-8">
 <title>글내용</title>
 <link href="../css/style2.css" rel="stylesheet">
+<!--jquery CDN주소 -->
+<script src="https://code.jquery.com/jquery-latest.min.js"></script> 
 <script> 
 
 function check() {
@@ -34,6 +36,34 @@ function check() {
 	  return;
 }
 
+
+$(document).ready(function(){
+	
+	$("#btn").click(function(){
+		//alert("추천버튼 클릭");	
+	
+	
+		$.ajax({
+			type :  "get",    //전송방식
+			url : "<%=request.getContextPath()%>/board/boardRecom.aws?bidx=<%=bv.getBidx()%>",
+			dataType : "json",       // json타입은 문서에서  {"키값" : "value값","키값2":"value값2"}
+			
+			success : function(result){   //결과가 넘어와서 성공했을 받는 영역
+				//alert("전송성공 테스트");
+			
+			var str ="추천("+result.recom+")";
+			//alert("str"+ str);//결과값 확인하는 디버깅코드
+				$("#btn").val(str);
+			},
+			error : function(){  //결과가 실패했을때 받는 영역
+						
+				alert("전송실패 테스트");
+			}			
+		});			
+	});	
+});
+
+
 </script>
 </head>
 <body>
@@ -42,7 +72,10 @@ function check() {
 </header>
 
 <article class="detailContents">
+<div class="detailTitle">
 	<h2 class="contentTitle"><%=bv.getSubject() %> (조회수:<%=bv.getViewcnt() %>)</h2>
+	<input type="button" id="btn" value="추천(<%=bv.getRecom() %>)" class="btn">
+	</div>
 	<p class="write"><%=bv.getWriter() %> (<%=bv.getWriteday() %>)</p>
 	<div class="content">
 		<%=bv.getContents() %>	
@@ -60,7 +93,7 @@ function check() {
 	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardModify.aws?bidx=<%=bv.getBidx()%>">수정</a>
 	<a class="btn aBtn" href="./delete.html">삭제</a>
 	<a class="btn aBtn" href="./comment.html">답변</a>
-	<a class="btn aBtn" href="./list.html">목록</a>
+	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardList.aws?bidx=<%=bv.getBidx()%>">목록</a>
 </div>
 
 <article class="commentContents">

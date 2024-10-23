@@ -86,7 +86,7 @@ function check() {
 		</tr>
 		<tr>
 			<th>첨부파일</th>
-			<td><input type="file" name="uploadfile"></td>
+			<td><input type="file" name="filename"></td>
 		</tr>
 	</table>
 	

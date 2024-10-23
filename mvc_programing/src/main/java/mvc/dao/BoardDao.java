@@ -43,6 +43,7 @@ public class BoardDao {
 			String contents = rs.getString("contents");
 			String writer =  rs.getString("writer");
 			int viewcnt = rs.getInt("viewcnt");
+			int recom = rs.getInt("recom");
 			String writeday = rs.getString("writeday");
 			
 		 	BoardVo bv = new BoardVo(); //멤버는 memberId에서 member를 포함한 id 그러니까 memberId풀네임(컬럼명)이라 쓴것
@@ -52,6 +53,7 @@ public class BoardDao {
 			bv.setContents(contents);
 			bv.setWriter(writer);
 			bv.setViewcnt(viewcnt);
+			bv.setRecom(recom);
 			bv.setWriteday(writeday);
 			
 			alist.add(bv); // ArrayList객체에 하나씩 추가한다
@@ -226,7 +228,7 @@ public class BoardDao {
 			pstmt.setString(3, bv.getWriter());
 			pstmt.setInt(4, bv.getBidx());
 			pstmt.setString(5, bv.getPassword());
-			value =  pstmt.executeUpdate();
+			value =  pstmt.executeUpdate();//실행하는 부분
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -240,5 +242,71 @@ public class BoardDao {
 		}
 		return value;
 	}
+public int boardViewCntUpdate(int bidx) { //스스로 완성하기
+	
+int value=0;
+String sql = "update board SET viewcnt = viewcnt+1 where bidx=?";	 //DB
+	
+	try {
+	pstmt = conn.prepareStatement(sql);	//sql쿼리 실행문 //pstmt = conn.prepareStatement(sql); 이걸 적어야지만 251줄에 SQLException e 나옴
+	pstmt.setInt(1, bidx); //?부분만 하면 됨 만약 DB문에 ?가 5개이면 5개를 10개면 10개를 select * from이라면 전부다를
+	value =  pstmt.executeUpdate();//실행하는 부분, 성공하면 1 실패하면 0
+	}catch(SQLException e) {//캐치문 
+		e.printStackTrace();// 개발자가 프로그램을 실행할 때 발생한 예외가 어떤 경로를 통해 발생했는지 추적하고 문제를 진단하기 위해 사용하는 디버깅 코드
+	}finally {
+		try {     // 각 객체도 소멸시키고 DB연결 끊는다
+			
+			//이 close문은 좀 물어봐야할 듯
+			//rs.close(); 이거는 자세히 알아봐야함
+			pstmt.close(); //이거는 자세히 알아봐야함
+		    //conn.close(); //이거는 자세히 알아봐야함
+		    
+		} catch (SQLException e) {			
+			e.printStackTrace();// 개발자가 프로그램을 실행할 때 발생한 예외가 어떤 경로를 통해 발생했는지 추적하고 문제를 진단하기 위해 사용하는 디버깅 코드
+		}			
+	}	
+
+	return value; //실패,성공 결과값가져오기(실패해도 잘했다고하심, 결국 1이 성공 0이 실패이다보니 실패도 선택지에 있다)실행되면 문제 없 
+}
+
+public int boardRecomUpdate(int bidx) {
+	
+	int value = 0;
+	int recom = 0;
+	String sql =  "update board set recom = recom+1 where bidx=?";
+	String sql2 = "select recom from board where bidx=?";
+	ResultSet rs = null;
+	
+	try {
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setInt(1, bidx);
+		value = pstmt.executeUpdate();
+		
+		pstmt = conn.prepareStatement(sql2);
+		pstmt.setInt(1, bidx);
+		rs = pstmt.executeQuery();
+		
+		if(rs.next()) {
+			recom = rs.getInt("recom");
+		}
+		
+		
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}finally {
+		try {     // 각 객체도 소멸시키고 DB연결 끊는다
+			
+			//이 close문은 좀 물어봐야할 듯
+			//rs.close(); 이거는 자세히 알아봐야함
+			pstmt.close(); //이거는 자세히 알아봐야함
+		    conn.close(); //이거는 자세히 알아봐야함
+		    
+		} catch (SQLException e) {			
+			e.printStackTrace();// 개발자가 프로그램을 실행할 때 발생한 예외가 어떤 경로를 통해 발생했는지 추적하고 문제를 진단하기 위해 사용하는 디버깅 코드
+		}			
+	}		
+	return recom;
+}
+
 
 	}
