@@ -10,6 +10,16 @@
     ArrayList<BoardVo> alist = (ArrayList<BoardVo>)request.getAttribute("alist");
     // System.out.println("alist==>"+alist);
      PageMaker pm = (PageMaker)request.getAttribute("pm"); 
+     
+     int totalCount = pm.getTotalCount();
+     
+     
+     
+     String keyword = pm.getScri().getKeyword();
+     String searchType = pm.getScri().getSearchType();
+     
+     String param = "keyword="+keyword+"&searchType="+searchType+"";
+     
     %>   
        
  
@@ -24,13 +34,13 @@
 <body>
 <header>
 	<h2 class="mainTitle">글목록</h2>
-	<form class="search">
-		<select>
-			<option>제목</option>
-			<option>작성자</option>
+	<form class="search" name="frm" action="<%=request.getContextPath()%>/board/boardList.aws" method="get">
+		<select name="searchType">
+			<option value="subject">제목</option>
+			<option value="writer">작성자</option>
 		</select>
-		<input type="text">
-		<button class="btn">검색</button>
+		<input type="text" name="keyword">
+		<button type="submit" class="btn">검색</button>
 	</form>
 </header>
 
@@ -45,17 +55,37 @@
 			<th>날짜</th>
 		</tr>
 		<!--   -->
- 		<% for(BoardVo bv : alist) { %> <!-- 이게 리스트에 있는 조회수나 추천수 넘버등등의 숫자를 하나씩 늘리는것  -->
+		<% 
+		int num = totalCount - (pm.getScri().getPage()-1)*pm.getScri().getPerPageNum();
+ 	    for(BoardVo bv : alist) {  // 이게 리스트에 있는 조회수나 추천수 넘버등등의 숫자를 하나씩 늘리는것 
+ 	    
+ 	    	System.out.print("level"+ bv.getLevel_());
+ 	    	String lvlStr = "";
+ 	   	for(int i=1; i<=bv.getLevel_(); i++) {
+ 	   		
+ 	   	lvlStr = lvlStr + "&nbsp;&nbsp;" ;
+ 	   	
+ 	    	if (i == bv.getLevel_()) {
+ 	    		lvlStr = lvlStr + "ㄴ";
+ 	    		}
+ 	    	}
+ 	    //System.out.print("lvlStr"+ lvlStr);
+ 	    	 %>
 		<tr>
-			<td><%=bv.getBidx() %></td>
-			<td class="title"><a href="<%=request.getContextPath() %> /board/boardContents.aws?bidx=<%=bv.getBidx() %>"><%=bv.getSubject() %></a></td>
+			<td><%= num %></td>
+			<td class="title">
+			<%=lvlStr %>
+			<a href="<%=request.getContextPath() %> /board/boardContents.aws?bidx=<%=bv.getBidx() %>"><%=bv.getSubject() %></a></td>
 			<!-- ?뒤에 넘기는 방식이 get방식 -->
 			<td><%=bv.getWriter() %></td>
 			<td><%=bv.getViewcnt() %></td>
 			<td><%=bv.getRecom() %></td>
 			<td><%=bv.getWriteday() %></td>
 		</tr>
-		<% }  %> 
+		<%
+		num = num - 1;
+		} 
+ 	    %> 
 	</table>
 	
 	<div class="btnBox">
@@ -65,19 +95,19 @@
 	 <div class="page">
 		<ul>
 		<% if (pm.isPrev()==true) { %>
-		<li><a href="<%=request.getContextPath() %>/board/boardList.aws?page=<%=pm.getStartPage()-1%>">◀</a></li>
+		<li><a href="<%=request.getContextPath() %>/board/boardList.aws?page=<%=pm.getStartPage()-1%>&<%=param%>">◀</a></li>
 		<%} %>
 		
 		<% for(int i = pm.getStartPage(); i <=pm.getEndPage(); i++) { %>
-			<li   <% if (i == pm.getCri().getPage()) { %> class="on"<% } %>  > 
-			<a href="<%=request.getContextPath() %>/board/boardList.aws?page=<%=i%>">
+			<li   <% if (i == pm.getScri().getPage()) { %> class="on"<% } %>  > 
+			<a href="<%=request.getContextPath() %>/board/boardList.aws?page=<%=i%>&<%=param%>">
 						<span style="font-size:20px;"> <%=i %></span>
 				</a>
 			</li>
 		<%} %>
 		
 		<%if(pm.isNext() == true && pm.getEndPage()>0){ %>
-		<li><a href="<%=request.getContextPath() %>/board/boardList.aws?page=<%=pm.getEndPage()+1%>">▶</a></li>
+		<li><a href="<%=request.getContextPath() %>/board/boardList.aws?page=<%=pm.getEndPage()+1%>&<%=param%>">▶</a></li>
 		<%} %>
 		</ul>
 	</div>  

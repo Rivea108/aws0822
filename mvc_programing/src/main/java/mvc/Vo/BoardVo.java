@@ -1,10 +1,5 @@
 package mvc.Vo;
 
-import java.util.ArrayList;
-
-import jakarta.servlet.RequestDispatcher;
-import mvc.dao.BoardDao;
-
 public class BoardVo {
 
 	//컨트롤 + F에 ,을 ;으로 변경후 아래줄 replace all(컨트롤 + 엔터) 하면 ,이 ;(세미콜론)으로 변경된다 

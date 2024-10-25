@@ -1,17 +1,30 @@
 package mvc.controller;
 
+import java.io.IOException;
+
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @WebServlet("/FrontController")
+@MultipartConfig(    //멀티파일을 설정한다 
+        fileSizeThreshold   = 1024 * 1024 * 1,  // 1 MB
+        maxFileSize         = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize      = 1024 * 1024 * 15, // 15 MB
+        location            = "D:/dev/temp"    //임시로 보관하는 위치 (물리적으로 만들어놔야한다)
+)
+
 public class FrontController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=UTF-8");
+		
 		
 		String uri = request.getRequestURI();  //1. 전체주소 뽑아서 
 		//        /member/memberJoinAction.aws
@@ -33,6 +46,10 @@ public class FrontController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		doGet(request, response);
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

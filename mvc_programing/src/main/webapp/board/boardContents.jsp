@@ -72,28 +72,32 @@ $(document).ready(function(){
 </header>
 
 <article class="detailContents">
-<div class="detailTitle">
-	<h2 class="contentTitle"><%=bv.getSubject() %> (조회수:<%=bv.getViewcnt() %>)</h2>
-	<input type="button" id="btn" value="추천(<%=bv.getRecom() %>)" class="btn">
-	</div>
+	<h2 class="contentTitle"><%=bv.getSubject() %> (조회수:<%=bv.getViewcnt() %>)
+	<input type="button" id="btn" value="추천(<%=bv.getRecom() %>)">
+	</h2>
+	
 	<p class="write"><%=bv.getWriter() %> (<%=bv.getWriteday() %>)</p>
+	
 	<div class="content">
 		<%=bv.getContents() %>	
 		
 	</div>
-	<% if (bv.getFilename() != null) { %>
-	<a href="#" class="fileDown">	
-	<img src="<%=bv.getFilename() %>">
-	첨부파일입니다.
-	</a>
+	<% if (bv.getFilename() == null || bv.getFilename().equals("") ) {}else{ %>
+	<img src="<%=request.getContextPath() %>/images/<%=bv.getFilename() %>">
+	<p>
+	<a href="<%=request.getContextPath() %>/board/boardDownload.aws?filename=<%=bv.getFilename() %>" class="fileDown">	
+	첨부파일 다운로드</a>
+	</p>
 	<%} %>
+	
+	
 </article>
 	
 <div class="btnBox">
 	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardModify.aws?bidx=<%=bv.getBidx()%>">수정</a>
-	<a class="btn aBtn" href="./delete.html">삭제</a>
-	<a class="btn aBtn" href="./comment.html">답변</a>
-	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardList.aws?bidx=<%=bv.getBidx()%>">목록</a>
+	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardDelete.aws?bidx=<%=bv.getBidx()%>">삭제</a>
+	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardReply.aws?bidx=<%=bv.getBidx()%>">답변</a>
+	<a class="btn aBtn" href="<%=request.getContextPath() %>/board/boardList.aws">목록</a>
 </div>
 
 <article class="commentContents">

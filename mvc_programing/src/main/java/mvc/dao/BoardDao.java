@@ -7,28 +7,39 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import mvc.Vo.BoardVo;
-import mvc.Vo.Criteria;
-import mvc.Vo.MemberVo;
+import mvc.Vo.SearchCriteria;
 import mvc.dbcon.Dbconn;
 
 public class BoardDao { 
 	
 	private Connection conn; //전역적으로 쓴다 연결객체를
-	
 	private PreparedStatement pstmt;//쿼리 실행을 위한 구문객체
 	
 	public BoardDao() { //1. 생성자 생성 db콘과 연결시키기 위해 Dbconn객체 생성 생성해야지만 mysql에 접속할수있다
-	Dbconn db = new Dbconn(); //객체 생성
-	this.conn =  db.getConnection(); //멤버??쪽으로 꺼내야한다고 하심
+		Dbconn db = new Dbconn(); //객체 생성
+		this.conn =  db.getConnection(); //멤버??쪽으로 꺼내야한다고 하심
 	}
-	public ArrayList<BoardVo> boardSelectAll(Criteria cri) { //형식먼저
-		int page = cri.getPage(); //페이지번호
-		int perPageNum = cri.getPerPageNum(); //화면노출 개수
+	
+	public ArrayList<BoardVo> boardSelectAll(SearchCriteria scri) { //형식먼저
+		
+		int page = scri.getPage(); //페이지번호
+		int perPageNum = scri.getPerPageNum(); //화면노출 개수
+		
+
+		
+		  String str = "";
+		   String keyword = scri.getKeyword(); 
+		   String searchType = scri.getSearchType();
+		  
+		  //키워드가 존재한다면 like구문을 활용한다 
+		  if (!scri.getKeyword().equals("")) {
+		  str="and "+searchType+" like concat('%','"+keyword+"','%')"; } //('%','(공백)"+keyword+"(공백)','%') 이코드에서 안에 공백칸(스페이스바)가 있으면 '공백+ 검색글 +공백' 을 쓰는 방식이되어 검색이 제대로 되지 않는다.
+		 
 		
 		ArrayList<BoardVo> alist = new ArrayList<BoardVo>(); //메소드 생성 영역 시작===================================================
 		//ArrayList 컬렉션 객체에 BoardVo를 담겠다 BoardVo는 컬럼값을 담겠다.
 	
-		String sql = "select * from board order by originbidx desc, depth asc limit ?,?";
+		String sql = "select * from board where delyn='N' "+str+" order by originbidx desc, depth asc limit ?,?";
 		ResultSet rs = null;
 		
 	try {
@@ -45,6 +56,7 @@ public class BoardDao {
 			int viewcnt = rs.getInt("viewcnt");
 			int recom = rs.getInt("recom");
 			String writeday = rs.getString("writeday");
+			int level_ = rs.getInt("level_");
 			
 		 	BoardVo bv = new BoardVo(); //멤버는 memberId에서 member를 포함한 id 그러니까 memberId풀네임(컬럼명)이라 쓴것
 		 	//보드는 그냥 테이블명을 안붙인  bidx, subject, contents등등이다  // 첫행부터 bv에 옮겨담기
@@ -55,6 +67,7 @@ public class BoardDao {
 			bv.setViewcnt(viewcnt);
 			bv.setRecom(recom);
 			bv.setWriteday(writeday);
+			bv.setLevel_(level_);
 			
 			alist.add(bv); // ArrayList객체에 하나씩 추가한다
 		}
@@ -76,11 +89,19 @@ public class BoardDao {
 	//20241021 메소드 짜기
 	
 	//게시판 전체 갯수 구하기
-	public int boardTotalCount() {
+	public int boardTotalCount(SearchCriteria scri) {
+		
+		String str = "";
+		String keyword =  scri.getKeyword();
+		String searchType = scri.getSearchType();
+		
+		if(!scri.getKeyword().equals("")) {
+			str ="and "+searchType+" like  concat('%','"+keyword+"','%') ";	//키워드는 오타 서치타입은?
+		}
 		
 		int value = 0;
 		//1. 쿼리 만들기
-		String sql = "select COUNT(*) AS cnt from board where delyn = 'N'";
+		String sql = "select count(*) as cnt from board where delyn='N' "+str+"  ";
 		//2. conn 객체 안에 있는 구문 클래스 호출(생성)
 		//3. DB 컬럼값을 받는 전용 클래스 ResultSet 호출(ResultSet 특징은 데이터를 그대로 복사하기 때문에 전달이 빠름)
 		ResultSet rs = null;
@@ -110,12 +131,14 @@ public class BoardDao {
 		
 		String subject = bv.getSubject();
 		String contents = bv.getContents();
-		String writer = bv .getWriter();
+		String writer = bv.getWriter();
 		String password = bv.getPassword();
 		int midx =bv.getMidx();
+		String filename = bv.getFilename();
+		String ip = bv.getIp();
 		
-		String sql="insert into board(originbidx, depth, level_, subject, contents, writer, password, midx)"
-				+ "value(null, 0, 0, ?, ?, ?, ?, ?)";
+		String sql="insert into board(originbidx, depth, level_, subject, contents, writer, password, midx, filename, ip)"
+				+ "value(null, 0, 0, ?, ?, ?, ?, ?, ?, ?)";
 		
 		String sql2 = "update board set originbidx = (select A.maxbidx from (select max(bidx) as maxbidx from board)A) "
 				+ "where bidx= (select A.maxbidx from (select max(bidx) as maxbidx from board)A)";
@@ -128,6 +151,9 @@ public class BoardDao {
 			pstmt.setString(3, writer);
 			pstmt.setString(4, password);
 			pstmt.setInt(5, midx);
+			pstmt.setString(6, filename);
+			pstmt.setString(7, ip);
+			
 			int exec = pstmt.executeUpdate(); //실행되면 1 안되면 0
 			
 			pstmt = conn.prepareStatement(sql2);
@@ -308,5 +334,107 @@ public int boardRecomUpdate(int bidx) {
 	return recom;
 }
 
+public int boardDelete(int bidx, String password) {
+	
+	int value=0;
+	String sql="update board set delyn='Y' where bidx=? and password=?";
+	
+	try {
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setInt(1, bidx);
+		pstmt.setString(2, password);
+		value = pstmt.executeUpdate();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}finally {
+		try {     // 각 객체도 소멸시키고 DB연결 끊는다
+			pstmt.close(); //이거는 자세히 알아봐야함
+		    conn.close(); //이거는 자세히 알아봐야함
+		} catch (SQLException e) {			
+			e.printStackTrace();// 개발자가 프로그램을 실행할 때 발생한 예외가 어떤 경로를 통해 발생했는지 추적하고 문제를 진단하기 위해 사용하는 디버깅 코드
+		}			
+	}		
+	
+	
+	return value;
+}
 
-	}
+public int boardReply(BoardVo bv) {
+	
+	int value=0;
+	int maxbidx=0;
+	String sql="update board set depth= depth+1 where originbidx =?  and depth > ?";
+	String sql2="insert into board (originbidx, depth, level_, subject, contents, writer, midx, filename, password, ip) "//수정 답글의 ip를 담을때 수정(없어도 원글의 ip는 나옴) 
+				 + "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	String sql3 ="select max(bidx) as maxbidx from board where originbidx=?";
+	System.out.println(1);
+	try {
+		conn.setAutoCommit(false);   //수동커밋으로 하겠다
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setInt(1, bv.getOriginbidx());
+		pstmt.setInt(2, bv.getDepth());		
+		int exec = pstmt.executeUpdate();    //실행되면 1 안되면 0
+		System.out.println(2); 
+		
+		pstmt = conn.prepareStatement(sql2);
+		pstmt.setInt(1, bv.getOriginbidx());
+		pstmt.setInt(2, bv.getDepth()+1);
+		pstmt.setInt(3, bv.getLevel_()+1);
+		pstmt.setString(4, bv.getSubject());
+		pstmt.setString(5, bv.getContents());
+		pstmt.setString(6, bv.getWriter());
+		pstmt.setInt(7, bv.getMidx());
+		pstmt.setString(8, bv.getFilename());
+		pstmt.setString(9, bv.getPassword());
+		pstmt.setString(10, bv.getIp()); //답글 ip달기추가
+		
+		System.out.println(3);
+		
+		int exec2 = pstmt.executeUpdate();  //실행되면 1 안되면 0
+		
+		System.out.println(4);
+		
+		ResultSet rs = null;
+		pstmt = conn.prepareStatement(sql3);
+		pstmt.setInt(1, bv.getOriginbidx());
+		rs = pstmt.executeQuery();
+		
+		System.out.println(5);
+		
+		if (rs.next()) {
+			maxbidx = rs.getInt("maxbidx");
+		}
+		
+		conn.commit();  //일괄처리 커밋
+		System.out.println(6);
+		//value = exec+exec2;
+		
+	} catch (SQLException e) {			
+		try {
+			conn.rollback();     //실행중 오류발생시 롤백처리
+		} catch (SQLException e1) {			
+			e1.printStackTrace();
+		}  			
+		e.printStackTrace();
+	}finally {
+		try {     // 각 객체도 소멸시키고 DB연결 끊는다			
+			pstmt.close();
+			conn.close();
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}	
+	}			
+	
+	return maxbidx;
+}
+
+
+
+
+
+
+
+
+
+
+}
