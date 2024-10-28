@@ -41,23 +41,19 @@ table th, table td { padding: 5px 10px; }
 
 
 /* paging */
-.page { margin: 50px 0 20px; text-align: center; }
+.page { margin: 50px 0 20px; text-align: center;}
 .page ul { display: inline-block; }
-.page li { display: inline-block; width: 20px; cursor: pointer; } 
- /*height: 20px; 이게 있어서 글씨가 잘린거다 20px보다 높은데 20px로  제한하려고 하다보니 --> 에러가 날만한듯(그래서 지움)*/
+.page li { display: inline-block; width: 30px; height: 30px; cursor: pointer; }
 .page .on { background: black; color: white; }
 
 
 /* detail */
 .detailContents { border-bottom: 1px solid black; padding: 10px; }
-.detailContents .contentTitle {float : Left;}
-.detailContents .detailTitle .btn {float : right; width : 60px; }
-.detailContents .write{clear: both;}
 .detailContents .content { padding: 20px 0; }
 .detailContents .fileDown img { margin-right: 10px; }
 
 .commentContents form[name="frm"] { margin-bottom: 40px; }
-.commentContents .commentWriter { border: 1px solid lightgray; display: inline-block; padding: 0 100px; }
+.commentContents .commentWriter { border: 1px solid lightgray; display: inline-block; padding: 0 50px; }
 .commentContents input { width: 600px; height: 25px; float: left; }
 .commentContents .replyBtn { background: #555; width: 188px; float: left; border: none; cursor: pointer;
 	color: white; height: 27px; }

@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
         fileSizeThreshold   = 1024 * 1024 * 1,  // 1 MB
         maxFileSize         = 1024 * 1024 * 10, // 10 MB
         maxRequestSize      = 1024 * 1024 * 15, // 15 MB
-        location            = "D:/dev/temp"    //임시로 보관하는 위치 (물리적으로 만들어놔야한다)
+        location            = "D:/dev/temp"    //임시로 보관하는 위치 (실제로 파일을 만들어놔야한다)
 )
 
 public class FrontController extends HttpServlet {
@@ -22,8 +22,8 @@ public class FrontController extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=UTF-8");
+		//request.setCharacterEncoding("UTF-8");
+		//response.setContentType("text/html;charset=UTF-8");
 		
 		
 		String uri = request.getRequestURI();  //1. 전체주소 뽑아서 
@@ -37,7 +37,12 @@ public class FrontController extends HttpServlet {
 		}else if (entity[1].equals("board")) { //3. 보드는 보드컨트롤러를 부르고
 			BoardController  bc = new BoardController(entity[2]); //생성자 entity[2]
 			bc.doGet(request, response);			
+		}else if (entity[1].equals("comment")) { //3. 보드는 보드컨트롤러를 부르고
+			CommentController  cc = new CommentController(entity[2]); //생성자 entity[2]
+			cc.doGet(request, response);			
 		}
+		
+		
 		//(entity[1].equals("board")보더라고해놓고 보더컨트롤러에서 멤버컨트롤러를 반환해서 
 		//반환이 제대로 되지 아니하였다.
 		

@@ -59,7 +59,7 @@
 		int num = totalCount - (pm.getScri().getPage()-1)*pm.getScri().getPerPageNum();
  	    for(BoardVo bv : alist) {  // 이게 리스트에 있는 조회수나 추천수 넘버등등의 숫자를 하나씩 늘리는것 
  	    
- 	    	System.out.print("level"+ bv.getLevel_());
+ 	    	//System.out.print("level"+ bv.getLevel_());
  	    	String lvlStr = "";
  	   	for(int i=1; i<=bv.getLevel_(); i++) {
  	   		

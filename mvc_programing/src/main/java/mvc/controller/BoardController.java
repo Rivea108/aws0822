@@ -55,6 +55,7 @@ public class BoardController extends HttpServlet {
 			//if 문을 만들때 실행문이 한개일때 {}생략가능
 			int pageInt = Integer.parseInt(page); //문자를 숫자로 변경
 			
+			
 			String searchType = request.getParameter("searchType");
 			String keyword = request.getParameter("keyword");
 			if(keyword == null) keyword = "";
@@ -269,7 +270,7 @@ public class BoardController extends HttpServlet {
 			
 			PrintWriter out = response.getWriter();
 			out.println("{\"recom\":\""+recom+"\"}");
-			
+		
 			
 			
 			//paramMethod="S";
