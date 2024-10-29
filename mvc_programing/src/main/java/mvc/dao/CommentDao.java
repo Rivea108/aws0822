@@ -38,11 +38,16 @@ public class CommentDao {
 				String ccontents = rs.getString("ccontents");
 				String cwriter = rs.getString("cwriter");
 				String writeday = rs.getString("writeday");
+				String delyn = rs.getString("delyn");
+				int midx = rs.getInt("midx");
 				
 				CommentVo cv = new CommentVo();    // 첫행부터 bv에 옮겨담기
+				cv.setCidx(cidx);
 				cv.setCcontents(ccontents);
 				cv.setCwriter(cwriter);
-				cv.getWriteday();
+			    cv.setWriteday(writeday);
+			    cv.setDelyn(delyn);
+			    cv.setMidx(midx);
 				alist.add(cv);						// ArrayList객체에 하나씩 추가한다
 			}			
 		} catch (SQLException e) {			
@@ -138,17 +143,16 @@ public class CommentDao {
 		return value;
 	}		
 	
-	public int commentDelete(int bidx, String password) {
+	public int commentDelete(int cidx) {
 	
 		int value=0;
-		/*
 		
-		String sql="update board set delyn='Y' where bidx=? and password=?";
+		
+		String sql="update comment set delyn='Y' where cidx=?";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, bidx);
-			pstmt.setString(2, password);
+			pstmt.setInt(1, cidx);
 			value = pstmt.executeUpdate();   //성공하면 1  실패하면 0
 			
 		} catch (SQLException e) {			
@@ -161,7 +165,6 @@ public class CommentDao {
 				e.printStackTrace();
 			}	
 		}		
-	*/
 		return value;
 	}		
 	

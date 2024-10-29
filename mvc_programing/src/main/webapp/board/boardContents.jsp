@@ -3,13 +3,18 @@
 
  <%
  BoardVo bv = (BoardVo)request.getAttribute("bv");   //강제형변환  양쪽형을 맞춰준다 
+ 
  String memberName = "";
  if(session.getAttribute("memberName") !=null){
 	 memberName = (String)session.getAttribute("memberName");
  }
+ int midx=0;
+ if (session.getAttribute("midx") !=null){
+	 midx = (int)session.getAttribute("midx");
 
  System.out.println("contextpath : " + request.getContextPath()); //디버깅코드 
  System.out.println("bidx: " + bv.getBidx()); //디버깅코드
+ }
  %>   
     
 <!DOCTYPE html>
@@ -43,15 +48,74 @@
 	  return;
 } */
 
+//자바로 함수만들기
+
+function commentDel(cidx){
+	
+	let ans= confirm("삭제하시겠습니까?");
+	
+	if (ans== true){
+		
+		$.ajax({
+			type :  "get",    //전송방식
+			url : "<%=request.getContextPath()%>/comment/commentDeleteAction.aws?cidx="+cidx,
+			dataType : "json",       // json타입은 문서에서  {"키값" : "value값","키값2":"value값2"}
+			success : function(result){   //결과가 넘어와서 성공했을 받는 영역
+			//	alert("전송성공 테스트");	
+			//	alert(result.value);
+			$.boardCommentList();			
+							
+			},
+			error : function(){  //결과가 실패했을때 받는 영역						
+				alert("전송실패");
+			}			
+		});	
+		
+		
+	}	
+	return;
+}
+
 //jquery로 만드는 함수  ready밖에 생성
 $.boardCommentList = function(){
-	alert("ddddddd");
+	//alert("ddddddd");
 	$.ajax({
 		type :  "get",    //전송방식
 		url : "<%=request.getContextPath()%>/comment/commentList.aws?bidx=<%=bv.getBidx()%>",
 		dataType : "json",       // json타입은 문서에서  {"키값" : "value값","키값2":"value값2"}
 		success : function(result){   //결과가 넘어와서 성공했을 받는 영역
-			alert("전송성공");			
+		//	alert("전송성공 테스트");			
+		
+		var strTr = "";				
+		$(result).each(function(){	
+			
+			var btnn="";
+			
+			 //현재로그인 사람과 댓글쓴 사람의 번호가 같을때만 나타내준다
+			if (this.midx == "<%=midx%>") {
+				if (this.delyn=="N"){
+					btnn= "<button type='button' onclick='commentDel("+this.cidx+");'>삭제</button>";
+				}			
+			}
+			strTr = strTr + "<tr>"
+			+"<td>"+this.cidx+"</td>"
+			+"<td>"+this.cwriter+"</td>"
+			+"<td class='content'>"+this.ccontents+"</td>"
+			+"<td>"+this.writeday+"</td>"
+			+"<td>"+btnn+"</td>"
+			+"</tr>";					
+		});		       
+		
+		var str  = "<table class='replyTable'>"
+			+"<tr>"
+			+"<th>번호</th>"
+			+"<th>작성자</th>"
+			+"<th>내용</th>"
+			+"<th>날짜</th>"
+			+"<th>DEL</th>"
+			+"</tr>"+strTr+"</table>";		
+		
+		$("#commentListView").html(str);		
 						
 		},
 		error : function(){  //결과가 실패했을때 받는 영역						
@@ -61,81 +125,75 @@ $.boardCommentList = function(){
 }
 
 
-$(document).ready(function(){
-
-	//alert(12345679);
+$(document).ready(function(){	
+	//alert("dddddz");
+	$.boardCommentList();
+	
+	
 	$("#btn").click(function(){
-		//alert("추천버튼 클릭");	
+	//	alert("추천버튼 클릭");		
 	
-	
-		 $.ajax({
+		$.ajax({
 			type :  "get",    //전송방식
 			url : "<%=request.getContextPath()%>/board/boardRecom.aws?bidx=<%=bv.getBidx()%>",
 			dataType : "json",       // json타입은 문서에서  {"키값" : "value값","키값2":"value값2"}
 			success : function(result){   //결과가 넘어와서 성공했을 받는 영역
-				//alert("전송성공 테스트");
+			//	alert("전송성공 테스트");	
 			
-				//alert("str"+ str);//결과값 확인하는 디버깅코드
-				//$("#btn").val(str);
 				var str ="추천("+result.recom+")";			
 				$("#btn").val(str);			
 			},
-			
-			error : function(){  //결과가 실패했을때 받는 영역
-				//alert("전송실패 테스트");
+			error : function(){  //결과가 실패했을때 받는 영역						
+				alert("전송실패");
 			}			
-		});			 
+		});			
 	});	
 	
-	$("#cmtBtn").click(function(){ //제이쿼리로만드는 유효성검사
+	$("#cmtBtn").click(function(){
 		//alert("ddd");
-		let loginCheck = "<%=session.getAttribute("midx")%>";
-		//alert(loginCheck)
+		let loginCheck = "<%=midx%>";
+		//alert(loginCheck);
 		if (loginCheck == "" || loginCheck == "null" || loginCheck == null){
-			alert("로그인 해주세요");
+			alert("로그인을 해주세요");
 			return;
-		}
-			
-		
+		}  				
 		let cwriter = $("#cwriter").val();
 		let ccontents = $("#ccontents").val();
 		
-		if(cwriter ==  ""){
+		if (cwriter == ""){
 			alert("작성자를 입력해주세요");
 			$("#cwriter").focus();
-			return;
-			
-		}else if (ccontents == ""){
+			return;		
+		}else if (ccontents ==""){
 			alert("내용을 입력해주세요");
 			$("#ccontents").focus();
 			return;
 		}
 		
 		$.ajax({
-			type :  "post",    //내용을 옮겨야하기에 포스트전송방식
+			type :  "post",    //전송방식
 			url : "<%=request.getContextPath()%>/comment/commentWriteAction.aws",
-			data : {"cwriter" : cwriter,
-						 " ccontents": ccontents,
-						 "bidx" : "<%=bv.getBidx()%>",
-						 "midx" : "<%=session.getAttribute("midx")%>" 
-						 },
+			data : {"cwriter" : cwriter, 
+					   "ccontents" : ccontents, 
+					   "bidx" : "<%=bv.getBidx()%>",
+					   "midx" : "<%=midx%>"
+					   },
 			dataType : "json",       // json타입은 문서에서  {"키값" : "value값","키값2":"value값2"}
-			
 			success : function(result){   //결과가 넘어와서 성공했을 받는 영역
-				alert("전송테스트 성공");
-			
-			var str ="추천("+result.recom+")";
-			//alert("str"+ str);//결과값 확인하는 디버깅코드
-				$("#btn").val(str);
+				//alert("전송성공 테스트");			
+				//var str ="("+result.value+")";			
+				//alert(str);		
+				if(result.value ==1){
+					$("#ccontents").val("");
+				}				
+				$.boardCommentList();
 			},
-			error : function(){  //결과가 실패했을때 받는 영역
-						
-				alert("전송테스트 실패");
+			error : function(){  //결과가 실패했을때 받는 영역						
+				alert("전송실패");
 			}			
-		});			
+		});	
 		
-		
-	}); 
+	});		
 });
 
 
@@ -177,29 +235,15 @@ $(document).ready(function(){
 
 <article class="commentContents">
 	<form name="frm">
-		<p class="commentWriter">
+		<p class="commentWriter" style="width:100px;">
 		<input type="text" id="cwriter" name="cwriter" value="<%=memberName%>" readonly="readonly" style="width:100px;">
 		</p>	
 		<input type="text" id="ccontents" name="ccontents">
 		<button type="button" id="cmtBtn" class="replyBtn">댓글쓰기</button>
 	</form>
 	
-	<table class="replyTable">
-		<tr>
-			<th>번호</th>
-			<th>작성자</th>
-			<th>내용</th>
-			<th>날짜</th>
-			<th>DEL</th>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>홍길동</td>
-			<td class="content">댓글입니다</td>
-			<td>2024-10-18</td>
-			<td>sss</td>
-		</tr>
-	</table>
+	<div id="commentListView">a</div>
+	
 </article>
 
 </body>
